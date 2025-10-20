@@ -1,19 +1,19 @@
 {
-    "name": "My Application",
-    "short_name": "MyApp", /* 12-15 caracteres */
-    "start_url": "/index.html",
-    "display": "standalone", /* fullscreen, standalone, minimal-ui, browser */
+    "name": "Mi primer PWA ADGJD",
+    "short_name": "Mi PWA",
+    "start_url": "https://jonthanayala.github.io/pwa-10a/",
+    "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
-    "description": "An example application manifest file.",
+    "description": "Mi primera PWA Jonathan Ayala 10°A.",
     "icons": [
         {
-            "src": "icon-192.png",
+            "src": "img/icons/192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "icon-512.png",
+            "src": "img/icons/512.png",
             "sizes": "512x512",
             "type": "image/png"
         }

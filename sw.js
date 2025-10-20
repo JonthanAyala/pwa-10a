@@ -2,16 +2,19 @@
 const APP_SHELL_CACHE_NAME = 'app-shell-v2';
 const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1';
 
+const BASE_URL = 'https://jonthanayala.github.io/pwa-10a/';
 // A. Recursos del App Shell (Caché Estática: Cache Only)
 const APP_SHELL_ASSETS = [
-    '/',
-    'index.html',
-    'calendario.html',
-    'formulario.html',
-    'acerca.html',
-    'offline.html',
-    'style.css',
-    'register.js'
+    BASE_URL,
+    BASE_URL+'index.html',
+    BASE_URL+'calendario.html',
+    BASE_URL+'formulario.html',
+    BASE_URL+'acerca.html',
+    BASE_URL+'offline.html',
+    BASE_URL+'style.css',
+    BASE_URL+'register.js',
+    BASE_URL+'img/icons/192.png',
+    BASE_URL+'img/icons/512.png',
 ];
 
 // B. Recursos Dinámicos (Caché Dinámica: Cache First, Network Fallback)
