@@ -2,7 +2,7 @@
 const APP_SHELL_CACHE_NAME = 'app-shell-v2';
 const DYNAMIC_CACHE_NAME = 'dynamic-cache-v1';
 
-const BASE_URL = 'https://jonthanayala.github.io/pwa-10a/';
+const BASE_URL = '/pwa-10a/';
 // A. Recursos del App Shell (Caché Estática: Cache Only)
 const APP_SHELL_ASSETS = [
     BASE_URL,
@@ -60,60 +60,63 @@ self.addEventListener('activate', (event) => {
 });
 
 // 3. Evento 'fetch': Implementación de estrategias mixtas
-self.addEventListener('fetch', (event) => {
-    const request = event.request;
-    const requestUrl = request.url;
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  const requestUrl = new URL(request.url);
+  const pathname = requestUrl.pathname;
 
-    // Estrategia 1: Cache Only para el App Shell
-    if (APP_SHELL_ASSETS.some(asset => requestUrl.endsWith(asset))) {
-        event.respondWith(
-            caches.match(request)
-                .then(response => {
-                    if (response) {
-                        return response;
-                    }
-                    // Si no está en caché, ir a la red (aunque debería estar en caché)
-                    return fetch(request);
-                })
-        );
-    }
-    // Estrategia 2: Cache First, Network Fallback para recursos dinámicos
-    else if (DYNAMIC_ASSET_URLS.some(url => requestUrl.includes(url))) {
-        event.respondWith(
-            caches.open(DYNAMIC_CACHE_NAME).then(cache => {
-                return cache.match(request).then(response => {
-                    // Si está en caché, lo devuelve
-                    if (response) {
-                        return response;
-                    }
-                    // Si no está en caché, lo busca en la red
-                    return fetch(request).then(networkResponse => {
-                        // Si la red responde, lo guarda en caché y lo devuelve
-                        cache.put(request, networkResponse.clone());
-                        return networkResponse;
-                    }).catch(error => {
-                        // Si la red falla, podemos mostrar un error o devolver un recurso por defecto
-                        // Pero en este caso, no tenemos un recurso por defecto, entonces lanzamos el error.
-                        throw error;
-                    });
-                });
+  // Estrategia 1: Cache Only para el App Shell
+  const isAppShell = APP_SHELL_ASSETS.some((asset) => {
+    return (
+      pathname === asset || pathname === asset.replace(/\/$/, "/index.html")
+    );
+  });
+
+  if (isAppShell) {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        if (response) {
+          return response;
+        }
+        // Si no está en caché, ir a la red (aunque debería estar en caché)
+        return fetch(request);
+      })
+    );
+  }
+  // Estrategia 2: Cache First, Network Fallback para recursos dinámicos
+  else if (DYNAMIC_ASSET_URLS.some((url) => request.url.includes(url))) {
+    event.respondWith(
+      caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
+        return cache.match(request).then((response) => {
+          if (response) {
+            return response;
+          }
+          return fetch(request)
+            .then((networkResponse) => {
+              cache.put(request, networkResponse.clone());
+              return networkResponse;
             })
-        );
-    }
-    // Para las peticiones de navegación (páginas) que no están en el App Shell, usamos Network First o mostramos offline.html
-    else if (request.mode === 'navigate') {
-        event.respondWith(
-            fetch(request).catch(() => {
-                return caches.match('offline.html');
-            })
-        );
-    }
-    // Para cualquier otra petición (por ejemplo, imágenes, etc.) que no están en ninguna lista, usamos la red primero y luego caché si está disponible.
-    else {
-        event.respondWith(
-            caches.match(request).then(response => {
-                return response || fetch(request);
-            })
-        );
-    }
+            .catch((error) => {
+              throw error;
+            });
+        });
+      })
+    );
+  }
+  // Para las peticiones de navegación (páginas) que no están en el App Shell, usamos Network First o mostramos offline.html
+  else if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request).catch(() => {
+        return caches.match(BASE_URL + "offline.html");
+      })
+    );
+  }
+  // Para cualquier otra petición
+  else {
+    event.respondWith(
+      caches.match(request).then((response) => {
+        return response || fetch(request);
+      })
+    );
+  }
 });
