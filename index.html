@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA - Implementación de Estrategias Mixtas de Caché</title>
+    <!-- CDNs (Cache First, Network Fallback) -->
+   <!-- En TODOS los HTML, pon Tailwind PRIMERO -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="text-3xl font-bold">Implementación de Estrategias Mixtas de Caché</h1>
+        <p class="mt-1 text-indigo-200">Bienvenida PWA</p>
+    </header>
+
+    <!-- Navegación (App Shell - Cache Only) -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-btn active bg-indigo-600">Inicio</a>
+        <a href="calendario.html" class="nav-btn">Calendario</a>
+        <a href="formulario.html" class="nav-btn">Formulario</a>
+        <a href="acerca.html" class="nav-btn">Acerca de</a>
+    </nav>
+
+    <main class="container">
+        <!-- Contenido Único: index.html -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 content-section">Bienvenida PWA</h2>
+        <div class="card p-6">
+            <p class="text-gray-700">Esta aplicación utiliza Service Worker para demostrar dos estrategias de caché:</p>
+            <ul class="list-disc list-inside mt-4 space-y-2">
+                <li><strong class="text-highlight-purple">Cache Only:</strong> Para esta estructura base, navegación y estilos (App Shell).</li>
+                <li><strong class="text-highlight-green">Cache First, Network Fallback:</strong> Para las librerías de terceros (FullCalendar y Select2), así como para las CDNs de Tailwind y Google Fonts.</li>
+            </ul>
+            <p class="text-gray-700 mt-4">Navega a las otras secciones para ver las estrategias en acción.</p>
+        </div>
+    </main>
+
+    <!-- register.js (Carga del Service Worker) -->
+    <script src="register.js"></script>
+</body>
+</html>

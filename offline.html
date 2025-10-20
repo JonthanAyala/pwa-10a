@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Ups! Sin Conexión</title>
+ <!-- En TODOS los HTML, pon Tailwind PRIMERO -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <header class="header">
+        <h1 class="text-3xl font-bold">Error de Conexión</h1>
+        <p class="mt-1 text-red-300">Recurso Dinámico No Disponible</p>
+    </header>
+
+    <!-- Navegación (App Shell - Cache Only) -->
+    <nav class="nav-bar">
+        <!-- Estos enlaces SÍ deben funcionar porque son App Shell -->
+        <a href="index.html" class="nav-btn">Inicio</a>
+        <a href="calendario.html" class="nav-btn">Calendario</a>
+        <a href="formulario.html" class="nav-btn">Formulario</a>
+        <a href="acerca.html" class="nav-btn">Acerca de</a>
+    </nav>
+
+    <main class="container flex-grow">
+        <div class="card p-8 text-center bg-white shadow-xl max-w-lg mx-auto mt-10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-red-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <h2 class="text-2xl font-bold text-red-600 mb-2">¡No se puede cargar este contenido!</h2>
+            <p class="text-gray-700">Parece que estás **offline** y este recurso (como el calendario o el formulario) no ha sido cacheado dinámicamente aún. </p>
+            <p class="text-gray-700 mt-2 font-semibold">Regresa a <a href="index.html" class="text-indigo-600 hover:text-indigo-800 underline">Inicio</a> o conéctate a la red y vuelve a intentarlo.</p>
+        </div>
+    </main>
+
+    <!-- register.js (Carga del Service Worker) -->
+    <script src="register.js"></script>
+</body>
+</html>

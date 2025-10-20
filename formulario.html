@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Formulario - Estrategias de Caché Mixtas</title>
+    <!-- CDNs (Cache First, Network Fallback) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Archivo Local (Cache Only) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="text-3xl font-bold">Página de Formulario</h1>
+        <p class="mt-1 text-indigo-200">Demostración de Cache First, Network Fallback</p>
+    </header>
+
+    <!-- Navegación (App Shell - Cache Only) -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-btn">Inicio</a>
+        <a href="calendario.html" class="nav-btn">Calendario</a>
+        <a href="formulario.html" class="nav-btn active bg-indigo-600">Formulario</a>
+        <a href="acerca.html" class="nav-btn">Acerca de</a>
+    </nav>
+
+    <main class="container">
+        <!-- Contenido Único: formulario.html -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 content-section">Formulario de Contacto</h2>
+        <p class="text-gray-600 mb-4">Esta página utiliza librerías gestionadas con la estrategia <strong class="text-highlight-green">Cache First</strong>. El selector Select2 se cargará de la red o del caché.</p>
+        
+        <div class="card p-6">
+            <form id="contact-form" class="space-y-6">
+                <!-- Campos del formulario -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan" required 
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="apellidos" class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+                        <input type="text" id="apellidos" name="apellidos" placeholder="Ej. Pérez García" required 
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Selector de País (Select2) - Placeholder -->
+                <div>
+                    <label for="select2-example" class="block text-sm font-medium text-gray-700 mb-1">País (Selector Dinámico - Select2)</label>
+                    <!-- Aquí se inicializará Select2 -->
+                    <select id="select2-example" class="w-full p-2 border border-gray-300 rounded-lg">
+                        <option value="">Selecciona un País</option>
+                        <option value="mx">México</option>
+                        <option value="es">España</option>
+                        <option value="ar">Argentina</option>
+                        <option value="cl">Chile</option>
+                        <option value="co">Colombia</option>
+                        <option value="pe">Perú</option>
+                        <option value="us">Estados Unidos</option>
+                    </select>
+                </div>
+
+                <!-- Comentarios -->
+                <div>
+                    <label for="comentarios" class="block text-sm font-medium text-gray-700 mb-1">Comentarios</label>
+                    <textarea id="comentarios" name="comentarios" rows="3" placeholder="Escribe tus comentarios aquí..."
+                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" id="submit-btn" 
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-150">
+                    Enviar Formulario
+                </button>
+
+                <p id="message-status" class="text-center mt-4 hidden text-sm font-medium"></p>
+            </form>
+        </div>
+
+        <script>
+            const DYNAMIC_LIBS = [
+                'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css'
+            ];
+            
+            // Función genérica para cargar scripts o CSS
+            function loadAsset(url) {
+                return new Promise((resolve, reject) => {
+                    const isCss = url.endsWith('.css');
+                    const element = document.createElement(isCss ? 'link' : 'script');
+                    
+                    if (isCss) {
+                        element.rel = 'stylesheet';
+                        element.href = url;
+                        element.onload = resolve;
+                        element.onerror = reject;
+                        document.head.appendChild(element);
+                    } else {
+                        element.src = url;
+                        element.onload = resolve;
+                        element.onerror = reject;
+                        document.body.appendChild(element);
+                    }
+                });
+            }
+
+            // Función principal para inicializar el formulario y Select2
+            async function initializeForm() {
+                const messageStatus = document.getElementById('message-status');
+                const form = document.getElementById('contact-form');
+                const submitBtn = document.getElementById('submit-btn');
+                
+                function showMessage(text, isError) {
+                    messageStatus.classList.remove('hidden', 'text-red-500', 'text-green-500');
+                    messageStatus.classList.add(isError ? 'text-red-500' : 'text-green-500', 'block');
+                    messageStatus.textContent = text;
+                }
+
+                // Intentar cargar todas las librerías dinámicas
+                try {
+                    await Promise.all(DYNAMIC_LIBS.map(loadAsset));
+
+                    // Si llega aquí, jQuery y Select2 están cargados (de red o caché)
+                    if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
+                        jQuery('#select2-example').select2({
+                            placeholder: "Selecciona una opción",
+                            allowClear: true
+                        });
+                        console.log('Select2 inicializado correctamente.');
+                    } else {
+                        showMessage('❌ Alerta: Select2 no se cargó correctamente.', true);
+                    }
+                } catch (error) {
+                    // Si falla una, generalmente significa que estamos offline y la librería no fue cacheada
+                    showMessage('❌ Error: Componentes dinámicos no disponibles. Estás Offline.', true);
+                }
+
+                // Lógica del Formulario (sin cambios)
+                function checkOnlineStatus() {
+                    if (!navigator.onLine) {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                        submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                        submitBtn.textContent = '❌ Formulario Desactivado (Sin Conexión)';
+                    } else {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                        submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        submitBtn.textContent = 'Enviar Formulario';
+                    }
+                }
+
+                checkOnlineStatus();
+                window.addEventListener('online', checkOnlineStatus);
+                window.addEventListener('offline', checkOnlineStatus);
+
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    if (!navigator.onLine) {
+                        showMessage('❌ ERROR: No se puede enviar el formulario sin conexión a Internet.', true);
+                        return;
+                    }
+
+                    showMessage('✅ Formulario validado y enviado con éxito (Online).', false);
+                    setTimeout(() => {
+                        messageStatus.classList.add('hidden');
+                        form.reset();
+                        if (typeof jQuery !== 'undefined') {
+                            jQuery('#select2-example').val(null).trigger('change');
+                        }
+                    }, 3000);
+                });
+            }
+            
+            // Inicializar el formulario y sus componentes
+            document.addEventListener('DOMContentLoaded', initializeForm);
+        </script>
+    </main>
+
+    <!-- register.js (Carga del Service Worker) -->
+    <script src="register.js"></script>
+</body>
+</html>

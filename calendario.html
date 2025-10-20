@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Calendario - Estrategias de Caché Mixtas</title>
+    <!-- CDNs (Cache First, Network Fallback) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Archivo Local (Cache Only) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- CSS de FullCalendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css">
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="text-3xl font-bold">Página de Calendario</h1>
+        <p class="mt-1 text-indigo-200">Demostración de Cache First, Network Fallback</p>
+    </header>
+
+    <!-- Navegación (App Shell - Cache Only) -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-btn">Inicio</a>
+        <a href="calendario.html" class="nav-btn active bg-indigo-600">Calendario</a>
+        <a href="formulario.html" class="nav-btn">Formulario</a>
+        <a href="acerca.html" class="nav-btn">Acerca de</a>
+    </nav>
+
+    <main class="container">
+        <!-- Contenido Único: calendario.html -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 content-section">Página de Calendario</h2>
+        <p class="text-gray-600 mb-4">Esta página carga la librería FullCalendar, gestionada con la estrategia <strong class="text-highlight-green">Cache First</strong>. El calendario aparecerá una vez que se cargue la librería (de red o de caché).</p>
+        
+        <!-- Contenedor del Calendario -->
+        <div id='fullcalendar-container' class="card p-4">
+            <p id="loading-msg" class="text-indigo-500 font-semibold text-center">Cargando librería FullCalendar...</p>
+        </div>
+
+        <script>
+            function loadFullCalendar() {
+                const calendarEl = document.getElementById('fullcalendar-container');
+                const loadingMsg = document.getElementById('loading-msg');
+                
+                // Verificar si FullCalendar ya está disponible (desde caché)
+                if (typeof FullCalendar !== 'undefined') {
+                    initializeCalendar();
+                    return;
+                }
+                
+                // Cargar dinámicamente
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js';
+                
+                script.onload = () => {
+                    if (loadingMsg) loadingMsg.remove();
+                    initializeCalendar();
+                };
+                
+                script.onerror = () => {
+                    if (loadingMsg) loadingMsg.remove();
+                    calendarEl.innerHTML = '<p class="text-red-500 font-semibold">❌ FullCalendar no disponible offline.</p><p class="text-gray-500 mt-2">Conéctate a internet para cargar esta librería por primera vez.</p>';
+                };
+                
+                document.body.appendChild(script);
+            }
+
+            function initializeCalendar() {
+                const calendarEl = document.getElementById('fullcalendar-container');
+                try {
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'es',
+                        height: 'auto',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        events: [{
+                            title: 'Evento Demo',
+                            start: new Date().toISOString().split('T')[0],
+                            color: '#4f46e5'
+                        }]
+                    });
+                    calendar.render();
+                    console.log('FullCalendar inicializado correctamente.');
+                } catch (error) {
+                    calendarEl.innerHTML = '<p class="text-red-500 font-semibold">Error al inicializar FullCalendar.</p>';
+                }
+            }
+            
+            // Llamamos a la función inmediatamente al final del body para maximizar el tiempo de activación del SW.
+            loadFullCalendar();
+        </script>
+    </main>
+
+    <!-- register.js (Carga del Service Worker) -->
+    <script src="register.js"></script>
+</body>
+</html>
