@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#000000">
     <title>PWA Formulario - Estrategias de Caché Mixtas</title>
     <!-- CDNs (Cache First, Network Fallback) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,6 +12,14 @@
     <!-- Archivo Local (Cache Only) -->
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <!-- iOS PWA: modo standalone y barra de estado -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi PWA">
+    <!-- iOS PWA: icono de pantalla de inicio -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icons/192.png">
+    <!-- Opcional: icono precompuesto sin brillo de Safari (usando el mismo recurso por ahora) -->
+    <link rel="apple-touch-icon-precomposed" href="img/icons/192.png">
 </head>
 <body>
 

@@ -10,6 +10,11 @@ body {
     background-color: #f7f9fb; 
     margin: 0;
     padding: 2rem;
+    /* Respetar safe areas en iOS (notch) cuando está en standalone */
+    padding-top: max(2rem, env(safe-area-inset-top));
+    padding-left: max(2rem, env(safe-area-inset-left));
+    padding-right: max(2rem, env(safe-area-inset-right));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
 }
 
 main {
@@ -27,7 +32,7 @@ main {
 
 /* Encabezado */
 .header {
-    background-color: #4f46e5; /* indigo-700 */
+    background-color: #770606; /* indigo-700 */
     color: white;
     padding: 1rem;
     border-radius: 0.75rem;
@@ -44,7 +49,7 @@ main {
     margin-bottom: 2rem;
 }
 .nav-btn {
-    background-color: #6366f1; /* indigo-500 */
+    background-color: #770606; /* indigo-500 */
     color: white;
     font-weight: 600;
     padding: 0.5rem 1rem;
@@ -56,7 +61,7 @@ main {
 }
 /* Estilo para el botón activo o hover */
 .nav-btn:hover, .nav-btn.active, .bg-indigo-600 { 
-    background-color: #4f46e5; /* indigo-600 */
+    background-color: #770606; /* indigo-600 */
 }
 
 /* Utilidades */
@@ -65,7 +70,7 @@ main {
     border-bottom: 1px solid #e5e7eb;
     margin-bottom: 1.5rem;
 }
-.text-highlight-indigo { color: #4f46e5; font-weight: 600; }
+.text-highlight-indigo { color: #770606; font-weight: 600; }
 .text-highlight-green { color: #10b981; font-weight: 600; }
 .card {
     background-color: #f9fafb;

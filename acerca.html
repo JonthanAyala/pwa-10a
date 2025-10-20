@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#000000">
     <title>PWA Acerca de - Estrategias de Caché Mixtas</title>
     <!-- CDNs (Cache First, Network Fallback) -->
 <!-- En TODOS los HTML, pon Tailwind PRIMERO -->
@@ -10,6 +12,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
+    <!-- iOS PWA: modo standalone y barra de estado -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi PWA">
+    <!-- iOS PWA: icono de pantalla de inicio -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icons/192.png">
+    <!-- Opcional: icono precompuesto sin brillo de Safari (usando el mismo recurso por ahora) -->
+    <link rel="apple-touch-icon-precomposed" href="img/icons/192.png">
 </head>
 <body>
 
@@ -32,7 +42,7 @@
         <p class="text-gray-600">Esta es una demostración práctica de la **estrategia de caché mixta** para optimizar la velocidad y la experiencia *offline* de una Aplicación Web Progresiva.</p>
         <div class="mt-6 p-4 bg-indigo-50 rounded-lg card border-indigo-200">
             <h3 class="font-semibold text-highlight-indigo mb-1">Información del Estudiante</h3>
-            <p class="text-sm text-gray-600">Nombre: Andres Isai Acosta Guerra</p>
+            <p class="text-sm text-gray-600">Nombre: Jonathan David Ayala Garcia</p>
             <p class="text-sm text-gray-600">Práctica: Implementación de Estrategias Mixtas de Caché</p>
         </div>
     </main>
